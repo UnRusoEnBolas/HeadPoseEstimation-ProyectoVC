@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import dlib
 
-def getLandmarksCoordinates(frame, box, trainedModelPath="./trainedModels/shape_predictor_81_face_landmarks.dat"):
+def getLandmarksCoordinates(frame, box, trainedModelPath="./trainedModels/shape_predictor_68_face_landmarks.dat"):
     # Pasamos a escala de grises 
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     shapePredictor = dlib.shape_predictor(trainedModelPath)
