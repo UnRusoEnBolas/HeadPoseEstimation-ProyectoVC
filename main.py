@@ -19,7 +19,7 @@ while True:
         (x,y,w,h) = box
         cv2.rectangle(frame, (x,y), (x+w,y+h), (0,0,255), 2)
 
-        # Obtenemos 81 puntos de referencia de la cara detectada
+        # Obtenemos 68 puntos de referencia de la cara detectada
         landmarksCoords = ll.getLandmarksCoordinates(frame, box)
         for coord in landmarksCoords:
             cv2.circle(frame, coord, 3, (0,0,255))
