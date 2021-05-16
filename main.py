@@ -24,18 +24,19 @@ while True:
     # Reducimos (o no) el tamaño.
     resizedGrayFrame = cv2.resize(grayFrame, (int(width), int(height)))
 
-    detected, box = fd.getBoundingBox(faceDetector, resizedGrayFrame)
+    detected, boxes = fd.getBoundingBox(faceDetector, resizedGrayFrame)
     if detected:
-        # Por si se ha hecho downsizing, se recupera el tamaño del la bb
-        drawingBox = (box/DOWNSIZE_FACTOR).astype(np.int64)
-        (x,y,w,h) = drawingBox       
-        cv2.rectangle(frame, (x,y), (x+w,y+h), (255,0,0), 2)    
-        
-        # Obtenemos 68 puntos de referencia de la cara detectada 
-        landmarksCoords = ll.getLandmarksCoordinates(shapePredictor, resizedGrayFrame, box)
-        drawingCoords = (landmarksCoords/DOWNSIZE_FACTOR).astype(np.int64)  
-        for coord in drawingCoords:
-            cv2.circle(frame, coord, 1, (0,255,0))
+        for box in boxes:
+            # Por si se ha hecho downsizing, se recupera el tamaño del la bb
+            drawingBox = (box/DOWNSIZE_FACTOR).astype(np.int64)
+            (x,y,w,h) = drawingBox       
+            cv2.rectangle(frame, (x,y), (x+w,y+h), (255,0,0), 2)    
+            
+            # Obtenemos 68 puntos de referencia de la cara detectada 
+            landmarksCoords = ll.getLandmarksCoordinates(shapePredictor, resizedGrayFrame, box)
+            drawingCoords = (landmarksCoords/DOWNSIZE_FACTOR).astype(np.int64)  
+            for coord in drawingCoords:
+                cv2.circle(frame, coord, 1, (0,255,0))
          
     cv2.imshow('Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)
 
