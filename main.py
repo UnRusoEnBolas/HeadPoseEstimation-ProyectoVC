@@ -67,7 +67,7 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
                     (landmarksCoords[291])  # Extremo derecho boca
         ], dtype=np.float64)
 
-        success, rotVector, traVect, _ = pe.poseEstimation(modelPoints, cameraMat, poseEstimationLandmarks)
+        success, rotVector, traVect = pe.poseEstimation(modelPoints, cameraMat, poseEstimationLandmarks)
 
         
         poseEstimationLandmarks = poseEstimationLandmarks
