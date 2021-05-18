@@ -76,14 +76,17 @@ while True:
                     (landmarksCoords[48,0], landmarksCoords[48,1]), # Extremo izquierdo boca
                     (landmarksCoords[54,0], landmarksCoords[54,1])  # Extremo derecho boca
         ], dtype=np.float64)
-        success, rotVector, traVect = pe.poseEstimation(modelPoints, cameraMat, poseEstimationLandmarks)
 
+        success, rotVector, traVect, _ = pe.poseEstimation(modelPoints, cameraMat, poseEstimationLandmarks)
+
+        
         poseEstimationLandmarks = poseEstimationLandmarks/DOWNSIZE_FACTOR
-        (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 250.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
+        (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
         # Dibujamos la linea de la pose
         p1 = (int(poseEstimationLandmarks[0][0]),int(poseEstimationLandmarks[0][1]))
         p2 = (int(noseTip[0][0][0]/DOWNSIZE_FACTOR), int(noseTip[0][0][1]/DOWNSIZE_FACTOR))
         cv2.line(frame, p1, p2, (0,0,255), 2)
+        
          
     cv2.imshow('Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)
 
