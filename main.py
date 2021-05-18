@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import mediapipe as mp
 from imutils.video import FPS
+import poseEstimation as pe
 
 mediaPipeFaceMesh = mp.solutions.face_mesh
 videoInput = cv2.VideoCapture(0)
@@ -35,7 +36,6 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
         ret, frame = videoInput.read()
         rgbFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # ------------------------------TESTING----------------------------------
         rgbFrame.flags.writeable = False
         res = faceMesh.process(rgbFrame)
         rgbFrame.flags.writeable = True
@@ -49,33 +49,33 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
                         detectedLandmarks.landmark[i].y
                     ]
             landmarksCoords = landmarksCoords * np.array([[size[1], size[0]]])
-            for landmarkCoord in landmarksCoords.astype(np.int64):
-                cv2.circle(frame, landmarkCoord, 1, (0,255,0))
-        # -----------------------------------------------------------------------
+            for idx, landmarkCoord in enumerate(landmarksCoords.astype(np.int64)):
+                if idx in [94, 152, 33, 263, 61, 291]:
+                    cv2.circle(frame, landmarkCoord, 3, (0,255,255))
+                else:
+                    cv2.circle(frame, landmarkCoord, 1, (0,255,0))
 
-        '''
         # Obtenemos la estimation pose
 
         # Preparamos los puntos claves de los landmarks
         poseEstimationLandmarks = np.array([
-                    (landmarksCoords[33,0], landmarksCoords[33,1]), # Nariz
-                    (landmarksCoords[8,0], landmarksCoords[8,1]), # Barbilla
-                    (landmarksCoords[36,0], landmarksCoords[36,1]), # Extremo ojo izquierdo
-                    (landmarksCoords[45,0], landmarksCoords[45,1]), # Extremo ojo derecho
-                    (landmarksCoords[48,0], landmarksCoords[48,1]), # Extremo izquierdo boca
-                    (landmarksCoords[54,0], landmarksCoords[54,1])  # Extremo derecho boca
+                    (landmarksCoords[94]), # Nariz
+                    (landmarksCoords[152]), # Barbilla
+                    (landmarksCoords[33]), # Extremo ojo izquierdo
+                    (landmarksCoords[263]), # Extremo ojo derecho
+                    (landmarksCoords[61]), # Extremo izquierdo boca
+                    (landmarksCoords[291])  # Extremo derecho boca
         ], dtype=np.float64)
 
         success, rotVector, traVect, _ = pe.poseEstimation(modelPoints, cameraMat, poseEstimationLandmarks)
 
         
-        poseEstimationLandmarks = poseEstimationLandmarks/DOWNSIZE_FACTOR
+        poseEstimationLandmarks = poseEstimationLandmarks
         (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
         # Dibujamos la linea de la pose
         p1 = (int(poseEstimationLandmarks[0][0]),int(poseEstimationLandmarks[0][1]))
-        p2 = (int(noseTip[0][0][0]/DOWNSIZE_FACTOR), int(noseTip[0][0][1]/DOWNSIZE_FACTOR))
+        p2 = (int(noseTip[0][0][0]), int(noseTip[0][0][1]))
         cv2.line(frame, p1, p2, (0,0,255), 2)
-        '''
 
         cv2.imshow(
             'Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)
