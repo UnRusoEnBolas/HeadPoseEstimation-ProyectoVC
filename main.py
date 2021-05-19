@@ -9,7 +9,9 @@ import poseEstimation as pe
 # Más bajo -< más rápido, peor detección
 # Más alto -> más lento, mejor detección
 # No bajar de 0 (no incluído) y no recomendable pasar de 1
-DOWNSIZE_FACTOR = 0.5
+DOWNSIZE_FACTOR = 1
+AXIS_POSITION_OFFSET = (50,70)
+AXIS_FACTOR = 50
 FACE_DETECTION_MODEL = "./trainedModels/haarcascade_frontalface_default.xml"
 SHAPE_MODEL = "./trainedModels/shape_predictor_68_face_landmarks.dat"
 
@@ -78,6 +80,16 @@ while True:
         ], dtype=np.float64)
 
         success, rotVector, traVect, _ = pe.poseEstimation(modelPoints, cameraMat, poseEstimationLandmarks)
+
+        # Gráfica auxiliar de la rotación
+        rotMat, _ = cv2.Rodrigues(rotVector)
+        axis = (np.float64([[1,0,0], [0,1,0], [0,0,1]])*AXIS_FACTOR)
+        axis = (rotMat @ axis.T).T + [AXIS_POSITION_OFFSET[0],AXIS_POSITION_OFFSET[1],0]
+        for i in range(3):
+            p1 = AXIS_POSITION_OFFSET
+            p2 = ((axis[i][0]).astype(np.int64), (axis[i][1]).astype(np.int64))
+            color = (0,0,255) if i == 0 else (0,255,0) if i == 1 else (255,0,0)
+            cv2.line(frame, p1, p2, color, 2)
 
         
         poseEstimationLandmarks = poseEstimationLandmarks/DOWNSIZE_FACTOR
