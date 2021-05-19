@@ -5,6 +5,9 @@ from imutils.video import FPS
 import poseEstimation as pe
 from processFile import get3DFaceModelAsArray
 
+AXIS_SCALE = 50
+AXIS_POSITION_OFFSET = (50,70)
+
 mediaPipeFaceMesh = mp.solutions.face_mesh
 videoInput = cv2.VideoCapture(0)
 
@@ -46,10 +49,19 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
 
             success, rotVector, traVect = pe.poseEstimation(modelPoints, cameraMat, landmarksCoords)
 
-            (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
-            p1 = (int(landmarksCoords[94][0]),int(landmarksCoords[94][1]))
+            rotMat, _ = cv2.Rodrigues(rotVector)
+            axis = (np.float64([[1,0,0], [0,1,0], [0,0,1]])*AXIS_SCALE)
+            axis = (rotMat @ axis.T).T + [AXIS_POSITION_OFFSET[0],AXIS_POSITION_OFFSET[1],0]
+            for i in range(3):
+                p1 = AXIS_POSITION_OFFSET
+                p2 = (axis[i][0].astype(np.int64), axis[i][1].astype(np.int64))
+                color = (0,0,255) if i == 0 else (0,255,0) if i == 1 else (255,0,0)
+                cv2.line(frame, p1, p2, color, 2)
+            
+            (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 20.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
+            p1 = (int(landmarksCoords[1][0]),int(landmarksCoords[1][1]))
             p2 = (int(noseTip[0][0][0]), int(noseTip[0][0][1]))
-            cv2.line(frame, p1, p2, (0,0,255), 2)
+            cv2.line(frame, p1, p2, (255,0,0), 2)
 
         cv2.imshow(
             'Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)
