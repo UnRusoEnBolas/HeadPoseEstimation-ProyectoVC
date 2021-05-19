@@ -3,6 +3,7 @@ import cv2
 import mediapipe as mp
 from imutils.video import FPS
 import poseEstimation as pe
+from processFile import get3DFaceModelAsArray
 
 mediaPipeFaceMesh = mp.solutions.face_mesh
 videoInput = cv2.VideoCapture(0)
@@ -17,16 +18,7 @@ cameraMat = np.array(
      [0, 0, 1]], dtype=np.float64
 )
 
-# Modelo 3D estándar
-modelPoints = np.array([
-    (0.0, 0.0, 0.0),             # Punta nariz
-    (0.0, -330.0, -65.0),        # Barbilla
-    # Ojo izquierdo izquierda
-    (-225.0, 170.0, -135.0),
-    (225.0, 170.0, -135.0),      # Ojo derecho derecha
-    (-150.0, -150.0, -125.0),    # Boca izquierda
-    (150.0, -150.0, -125.0)      # Boca derecha
-])
+modelPoints = get3DFaceModelAsArray('canonicalDaceModel_Coordinates.txt')
 
 # Comenzar contador de FPS
 fps = FPS().start()
@@ -55,27 +47,13 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
                 else:
                     cv2.circle(frame, landmarkCoord, 1, (0,255,0))
 
-        # Obtenemos la estimation pose
+            success, rotVector, traVect = pe.poseEstimation(modelPoints, cameraMat, landmarksCoords)
 
-        # Preparamos los puntos claves de los landmarks
-        poseEstimationLandmarks = np.array([
-                    (landmarksCoords[94]), # Nariz
-                    (landmarksCoords[152]), # Barbilla
-                    (landmarksCoords[33]), # Extremo ojo izquierdo
-                    (landmarksCoords[263]), # Extremo ojo derecho
-                    (landmarksCoords[61]), # Extremo izquierdo boca
-                    (landmarksCoords[291])  # Extremo derecho boca
-        ], dtype=np.float64)
-
-        success, rotVector, traVect = pe.poseEstimation(modelPoints, cameraMat, poseEstimationLandmarks)
-
-        
-        poseEstimationLandmarks = poseEstimationLandmarks
-        (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
-        # Dibujamos la linea de la pose
-        p1 = (int(poseEstimationLandmarks[0][0]),int(poseEstimationLandmarks[0][1]))
-        p2 = (int(noseTip[0][0][0]), int(noseTip[0][0][1]))
-        cv2.line(frame, p1, p2, (0,0,255), 2)
+            (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
+            # Dibujamos la linea de la pose
+            p1 = (int(landmarksCoords[94][0]),int(landmarksCoords[94][1]))
+            p2 = (int(noseTip[0][0][0]), int(noseTip[0][0][1]))
+            cv2.line(frame, p1, p2, (0,0,255), 2)
 
         cv2.imshow(
             'Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)
