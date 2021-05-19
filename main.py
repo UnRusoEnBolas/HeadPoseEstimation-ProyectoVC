@@ -41,24 +41,18 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
                         detectedLandmarks.landmark[i].y
                     ]
             landmarksCoords = landmarksCoords * np.array([[size[1], size[0]]])
-            for idx, landmarkCoord in enumerate(landmarksCoords.astype(np.int64)):
-                if idx in [94, 152, 33, 263, 61, 291]:
-                    cv2.circle(frame, landmarkCoord, 3, (0,255,255))
-                else:
+            for landmarkCoord in landmarksCoords.astype(np.int64):
                     cv2.circle(frame, landmarkCoord, 1, (0,255,0))
 
             success, rotVector, traVect = pe.poseEstimation(modelPoints, cameraMat, landmarksCoords)
 
             (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
-            # Dibujamos la linea de la pose
             p1 = (int(landmarksCoords[94][0]),int(landmarksCoords[94][1]))
             p2 = (int(noseTip[0][0][0]), int(noseTip[0][0][1]))
             cv2.line(frame, p1, p2, (0,0,255), 2)
 
         cv2.imshow(
             'Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)
-
-        # Actualizar el contador de FPS
         fps.update()
 
         # 27 es el código de ESC en mi MacBook Pro (puede cambiar para cada PC)
