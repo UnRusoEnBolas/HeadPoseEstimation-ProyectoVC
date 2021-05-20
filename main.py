@@ -9,7 +9,7 @@ import poseEstimation as pe
 # Más bajo -< más rápido, peor detección
 # Más alto -> más lento, mejor detección
 # No bajar de 0 (no incluído) y no recomendable pasar de 1
-DOWNSIZE_FACTOR = 1
+DOWNSIZE_FACTOR = 0.75
 AXIS_POSITION_OFFSET = (50,70)
 AXIS_FACTOR = 50
 FACE_DETECTION_MODEL = "./trainedModels/haarcascade_frontalface_default.xml"
@@ -72,7 +72,7 @@ while True:
         # Preparamos los puntos claves de los landmarks
         poseEstimationLandmarks = np.array([
                     (landmarksCoords[33,0], landmarksCoords[33,1]), # Nariz
-                    (landmarksCoords[8,0], landmarksCoords[8,1]), # Barbilla
+                    (landmarksCoords[8,0], landmarksCoords[8,1]),   # Barbilla
                     (landmarksCoords[36,0], landmarksCoords[36,1]), # Extremo ojo izquierdo
                     (landmarksCoords[45,0], landmarksCoords[45,1]), # Extremo ojo derecho
                     (landmarksCoords[48,0], landmarksCoords[48,1]), # Extremo izquierdo boca
@@ -93,7 +93,7 @@ while True:
 
         
         poseEstimationLandmarks = poseEstimationLandmarks/DOWNSIZE_FACTOR
-        (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
+        (noseTip, _) = cv2.projectPoints(np.array([(0.0, 0.0, 750.0)]), rotVector, traVect, cameraMat, np.zeros((4,1)))
         # Dibujamos la linea de la pose
         p1 = (int(poseEstimationLandmarks[0][0]),int(poseEstimationLandmarks[0][1]))
         p2 = (int(noseTip[0][0][0]/DOWNSIZE_FACTOR), int(noseTip[0][0][1]/DOWNSIZE_FACTOR))
