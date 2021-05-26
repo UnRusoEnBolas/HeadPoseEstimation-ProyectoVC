@@ -8,7 +8,7 @@ test_labels = []
 train_idx = 0
 test_idx = 0
 idx = 0
-with open("ExpressionClassification/fer2013.csv") as f:
+with open("./fer2013.csv") as f:
     next(f)
     for line in f:
         emotion, pixels, set = line.split(',')
