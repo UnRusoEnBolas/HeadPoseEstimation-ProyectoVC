@@ -6,7 +6,7 @@ import os.path
 import mediapipe as mp
 import poseEstimation as pe 
 from processFile import get3DFaceModelAsArray
-import random
+import math
 
 from PIL import Image
 import PIL
@@ -15,6 +15,7 @@ ENABLE_POSE = False
 ENABLE_VIEW = False
 ENABLE_TRAIN = False
 ENABLE_TEST = False
+ENABLE_FEATURES = False
 
 AXIS_SCALE = 50
 AXIS_POSITION_OFFSET = (50,70)
@@ -46,6 +47,18 @@ if os.path.isfile("train_landmarks.npy"):
 else:
     print("Train NO trobat!")
     ENABLE_TRAIN = True
+
+if os.path.isfile("test_landmarks.npy"):
+    print("Test trobat!")
+else:
+    print("Test NO trobat!")
+    ENABLE_TEST = True
+
+if os.path.isfile("train_features.npy"):
+    print("Features trobat!")
+else:
+    print("Features NO trobat!")
+    ENABLE_FEATURES = True
 
 
 
@@ -188,4 +201,69 @@ if ENABLE_TEST:
 
 else:
     test_landmarks = np.load("./test_landmarks.npy")
+
+
+if ENABLE_FEATURES:
+    #landmarks features:
+        #F1 Altura ojo izquierdo (145-159)
+        #F2 Anchura ojo izquierdo (133-33)
+        #F3 Altura ojo derecho (374-386)
+        #F4 Anchura ojo derecho (263-362)
+        #F5 Anchura ceja izquierda (70-55)
+        #F6 Anchura ceja derecha (300-285)
+        #F7 Anchura Labios (291-61)
+        #F8 Distancia entre la parte superior del centro del ojo izquierdo
+         #con el centro de la ceja izquierda (159-52)
+        #F9 Distancia entre la parte superior del centro del ojo derecho
+         #con el centro de la ceja derecha (386-282)
+        #F10 Distancia entre el centro de la nariz y el centro de los labios (13-1)
+        #F11 Distancia entre la parte inferior del centro del ojo izquierdo 
+         #con el extremo izquierdo de los labios (61-145)
+        #F12 Distancia entre la parte inferior del centro del ojo derecho
+         #con el extremo derecho de los labios (291-374)
+    
+    array_features_train = np.empty((12,train_landmarks.shape[2]))
+    array_features_test = np.empty((12,test_landmarks.shape[2]))
+
+    
+    
+    #Obtenemos las features de los datos de train y de test (468,2,7178)
+    #SUPONEMOS QUE TRAIN Y TEST TIENEN EL MISMO NUMERO DE DATOS
+
+    for idx in range(train_landmarks.shape[2]):
+        array_features_train[0,idx] = round(math.dist(train_landmarks[145,:,idx],train_landmarks[159,:,idx]),2)
+        array_features_train[1,idx] = round(math.dist(train_landmarks[133,:,idx],train_landmarks[33,:,idx]),2)
+        array_features_train[2,idx] = round(math.dist(train_landmarks[374,:,idx],train_landmarks[386,:,idx]),2)
+        array_features_train[3,idx] = round(math.dist(train_landmarks[263,:,idx],train_landmarks[362,:,idx]),2)
+        array_features_train[4,idx] = round(math.dist(train_landmarks[70,:,idx],train_landmarks[55,:,idx]),2)
+        array_features_train[5,idx] = round(math.dist(train_landmarks[300,:,idx],train_landmarks[285,:,idx]),2)
+        array_features_train[6,idx] = round(math.dist(train_landmarks[291,:,idx],train_landmarks[61,:,idx]),2)
+        array_features_train[7,idx] = round(math.dist(train_landmarks[159,:,idx],train_landmarks[52,:,idx]),2)
+        array_features_train[8,idx] = round(math.dist(train_landmarks[386,:,idx],train_landmarks[282,:,idx]),2)
+        array_features_train[9,idx] = round(math.dist(train_landmarks[13,:,idx],train_landmarks[1,:,idx]),2)
+        array_features_train[10,idx] = round(math.dist(train_landmarks[61,:,idx],train_landmarks[145,:,idx]),2)
+        array_features_train[11,idx] = round(math.dist(train_landmarks[291,:,idx],train_landmarks[374,:,idx]),2)
+
+        array_features_test[0,idx] = round(math.dist(test_landmarks[145,:,idx],test_landmarks[159,:,idx]),2)
+        array_features_test[1,idx] = round(math.dist(test_landmarks[133,:,idx],test_landmarks[33,:,idx]),2)
+        array_features_test[2,idx] = round(math.dist(test_landmarks[374,:,idx],test_landmarks[386,:,idx]),2)
+        array_features_test[3,idx] = round(math.dist(test_landmarks[263,:,idx],test_landmarks[362,:,idx]),2)
+        array_features_test[4,idx] = round(math.dist(test_landmarks[70,:,idx],test_landmarks[55,:,idx]),2)
+        array_features_test[5,idx] = round(math.dist(test_landmarks[300,:,idx],test_landmarks[285,:,idx]),2)
+        array_features_test[6,idx] = round(math.dist(test_landmarks[291,:,idx],test_landmarks[61,:,idx]),2)
+        array_features_test[7,idx] = round(math.dist(test_landmarks[159,:,idx],test_landmarks[52,:,idx]),2)
+        array_features_test[8,idx] = round(math.dist(test_landmarks[386,:,idx],test_landmarks[282,:,idx]),2)
+        array_features_test[9,idx] = round(math.dist(test_landmarks[13,:,idx],test_landmarks[1,:,idx]),2)
+        array_features_test[10,idx] = round(math.dist(test_landmarks[61,:,idx],test_landmarks[145,:,idx]),2)
+        array_features_test[11,idx] = round(math.dist(test_landmarks[291,:,idx],test_landmarks[374,:,idx]),2)
+
+    np.save('train_features.npy', array_features_train)
+    np.save('test_features.npy', array_features_test)
+else:
+    array_train_features = np.load("./train_features.npy")
+    array_test_features = np.load("./test_features.npy")
+
+
+
+        
 

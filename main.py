@@ -44,8 +44,13 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
                         detectedLandmarks.landmark[i].y
                     ]
             landmarksCoords = landmarksCoords * np.array([[size[1], size[0]]])
+            counter = 0
             for landmarkCoord in landmarksCoords.astype(np.int64):
+                if counter == 1:
+                    cv2.circle(frame, landmarkCoord, 3, (0,0,255))
+                else:
                     cv2.circle(frame, landmarkCoord, 1, (0,255,0))
+                counter = counter + 1
 
             success, rotVector, traVect = pe.poseEstimation(modelPoints, cameraMat, landmarksCoords)
 
