@@ -8,7 +8,7 @@ test_labels = []
 train_idx = 0
 test_idx = 0
 idx = 0
-with open("fer2013.csv") as f:
+with open("ExpressionClassification/fer2013.csv") as f:
     next(f)
     for line in f:
         emotion, pixels, set = line.split(',')
@@ -24,11 +24,18 @@ with open("fer2013.csv") as f:
             test_idx += 1
         idx += 1
     
-    train_images_arr = np.asarray(train_images, dtype=np.uint8).reshape(48,48,-1)
-    test_images_arr = np.asarray(test_images, dtype=np.uint8).reshape(48,48,-1)
+    train_images_arr = np.empty((48,48,len(train_labels)), dtype=np.uint8)
+    test_images_arr = np.empty((48,48,len(test_labels)), dtype=np.uint8)
+    train_labels_arr = np.empty((len(train_labels)))
+    test_labels_arr = np.empty((len(test_labels)))
+
+    for i in range(len(train_labels)):
+        train_images_arr[:,:,i] = train_images[i]
+        train_labels_arr[i] = train_labels[i]
     
-    train_labels_arr = np.asarray(train_labels, dtype=np.chararray)
-    test_labels_arr = np.asarray(test_labels, dtype=np.chararray)
+    for i in range(len(test_labels)):
+        test_images_arr[:,:,i] = test_images[i]
+        test_labels_arr[i] = test_labels[i]
 
     np.save('train_images.npy', train_images_arr)
     np.save('test_images.npy', test_images_arr)

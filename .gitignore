@@ -2,3 +2,4 @@ venv/
 .vscode/
 __pycache__/
 ExpressionClassification/fer2013.csv
+ExpressionClassification/*.npy
