@@ -37,7 +37,7 @@ cameraMat = np.array(
 
 modelPoints = get3DFaceModelAsArray('canonicalDaceModel_Coordinates.txt')
 
-train_files = np.load("./ExpressionClassification/test_images.npy")
+train_files = np.load("./ExpressionClassification/train_images.npy")
 test_files = np.load("./ExpressionClassification/test_images.npy")
 train_landmarks = np.empty((468,2,train_files.shape[2]))
 test_landmarks = np.empty((468,2,test_files.shape[2]))
@@ -244,6 +244,7 @@ if ENABLE_FEATURES:
         array_features_train[10,idx] = round(math.dist(train_landmarks[61,:,idx],train_landmarks[145,:,idx]),2)
         array_features_train[11,idx] = round(math.dist(train_landmarks[291,:,idx],train_landmarks[374,:,idx]),2)
 
+    for idx in range(test_landmarks.shape[2]):
         array_features_test[0,idx] = round(math.dist(test_landmarks[145,:,idx],test_landmarks[159,:,idx]),2)
         array_features_test[1,idx] = round(math.dist(test_landmarks[133,:,idx],test_landmarks[33,:,idx]),2)
         array_features_test[2,idx] = round(math.dist(test_landmarks[374,:,idx],test_landmarks[386,:,idx]),2)

@@ -3,3 +3,4 @@ venv/
 __pycache__/
 ExpressionClassification/fer2013.csv
 ExpressionClassification/*.npy
+train_landmarks.npy
