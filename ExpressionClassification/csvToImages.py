@@ -8,7 +8,7 @@ test_labels = []
 train_idx = 0
 test_idx = 0
 idx = 0
-with open("./fer2013.csv") as f:
+with open("./ExpressionClassification/fer2013.csv") as f:
     next(f)
     for line in f:
         emotion, pixels, set = line.split(',')
@@ -37,7 +37,7 @@ with open("./fer2013.csv") as f:
         test_images_arr[:,:,i] = test_images[i]
         test_labels_arr[i] = test_labels[i]
 
-    np.save('train_images.npy', train_images_arr)
-    np.save('test_images.npy', test_images_arr)
-    np.save('train_labels.npy', train_labels_arr)
-    np.save('test_labels.npy', test_labels_arr)
+    np.save('./ExpressionClassification/train_images.npy', train_images_arr)
+    np.save('./ExpressionClassification/test_images.npy', test_images_arr)
+    np.save('./ExpressionClassification/train_labels.npy', train_labels_arr)
+    np.save('./ExpressionClassification/test_labels.npy', test_labels_arr)
