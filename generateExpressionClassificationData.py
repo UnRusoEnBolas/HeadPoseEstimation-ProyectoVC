@@ -15,7 +15,7 @@ ENABLE_POSE = False
 ENABLE_VIEW = False
 ENABLE_TRAIN = False
 ENABLE_TEST = False
-ENABLE_FEATURES = False
+ENABLE_FEATURES = True
 
 AXIS_SCALE = 50
 AXIS_POSITION_OFFSET = (50,70)
@@ -65,8 +65,8 @@ else:
 if ENABLE_TRAIN:
     for idx in range(train_files.shape[2]):
         img = train_files[:,:,idx]
-        newDims = img.shape[0]*5
-        img = cv2.resize(img, dsize=(newDims, newDims), interpolation=cv2.INTER_CUBIC)
+        #newDims = img.shape[0]*5
+        #img = cv2.resize(img, dsize=(newDims, newDims), interpolation=cv2.INTER_CUBIC)
         img = np.repeat(img[:,:,np.newaxis],3,axis=2)  
         size = img.shape
 
@@ -136,8 +136,8 @@ else:
 if ENABLE_TEST:
     for idx in range(test_files.shape[2]):
         img = test_files[:,:,idx]
-        newDims = img.shape[0]*5
-        img = cv2.resize(img, dsize=(newDims, newDims), interpolation=cv2.INTER_CUBIC)
+        #newDims = img.shape[0]*5
+        #img = cv2.resize(img, dsize=(newDims, newDims), interpolation=cv2.INTER_CUBIC)
         img = np.repeat(img[:,:,np.newaxis],3,axis=2)  
         size = img.shape
 

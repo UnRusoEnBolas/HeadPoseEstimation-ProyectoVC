@@ -10,6 +10,10 @@ HEIGHT, WIDTH, _ = frame.shape
 EMOTIONS = ["NEUTRAL", "HAPPY", "ANGRY", "SAD", "SURPRISED"]
 EMOTION = 0
 
+emotion_list = []
+landmarks_list = []
+counter = 0
+
 with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5) as faceMesh:
     while True:
         ret, frame = videoInput.read()
@@ -39,13 +43,25 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
         
         if cv2.waitKey(50) == 32:
             # Guardar landmarks y label
-            print("Spacebar")
+            emotion_list.append(EMOTION)
+            landmarks_list.append(landmarksCoords)
+            counter = counter + 1
+            print("Spacebar (counter:",counter,")")
         
         if cv2.waitKey(50) == 101:
             print("e")
             EMOTION += 1
             if EMOTION >= len(EMOTIONS):
                 EMOTION = 0
+            print("Emotion:", EMOTION)
 
+landmarks_array = np.array(landmarks_list)
+landmarks_array = np.swapaxes(landmarks_array,0,2)
+landmarks_array = np.swapaxes(landmarks_array,0,1)
+
+
+
+np.save("./ExpressionClassification/labels.npy", emotion_list)
+np.save("./ExpressionClassification/landmarks.npy", landmarks_array)
 videoInput.release()
 cv2.destroyAllWindows()

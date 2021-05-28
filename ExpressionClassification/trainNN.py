@@ -44,7 +44,7 @@ model = keras.Sequential(
         keras.layers.Dense(64, activation="relu"),
         keras.layers.Dense(32, activation="relu"),
         keras.layers.Dense(32, activation="relu"),
-        keras.layers.Dense(7, activation="softmax")
+        keras.layers.Dense(5, activation="softmax")
     ]
 )
 model.compile(
@@ -58,7 +58,7 @@ model.compile(
 model.fit(
     train_x,
     train_y,
-    epochs=1024,
+    epochs=35,
     validation_data=(test_x, test_y)
     )
 model.save("trainedClassificationNN")
