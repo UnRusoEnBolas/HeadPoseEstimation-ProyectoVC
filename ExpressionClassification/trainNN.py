@@ -25,11 +25,11 @@ test_y = aux
 
 # Transpose and scale training and testing data
 train_x = train_x.T
-scaler = preprocessing.StandardScaler().fit(train_x)
-train_x = scaler.transform(train_x)
+# scaler = preprocessing.StandardScaler().fit(train_x)
+# train_x = scaler.transform(train_x)
 
 test_x = test_x.T
-test_x = scaler.transform(test_x)
+# test_x = scaler.transform(test_x)
 ################################################################################
 
 ########################### Model Creation #####################################

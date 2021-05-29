@@ -1,13 +1,17 @@
+from expressionClassification import getExpression
 import numpy as np
 import cv2
 import mediapipe as mp
 from imutils.video import FPS
 import poseEstimation as pe
 from processFile import get3DFaceModelAsArray
+import tensorflow as tf
 
 AXIS_SCALE = 50
 AXIS_POSITION_OFFSET = (50,70)
+EXPRESSIONS = ["NEUTRAL", "HAPPY", "ANGRY", "SAD", "SURPRISED"]
 
+expModel = tf.keras.models.load_model('trainedClassificationNN')
 mediaPipeFaceMesh = mp.solutions.face_mesh
 videoInput = cv2.VideoCapture(0)
 
@@ -67,6 +71,8 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
             p1 = (int(landmarksCoords[1][0]),int(landmarksCoords[1][1]))
             p2 = (int(noseTip[0][0][0]), int(noseTip[0][0][1]))
             cv2.line(frame, p1, p2, (255,0,0), 2)
+
+            print(getExpression(expModel, landmarksCoords, EXPRESSIONS))
 
         cv2.imshow(
             'Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)
