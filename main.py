@@ -72,7 +72,15 @@ with mediaPipeFaceMesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confi
             p2 = (int(noseTip[0][0][0]), int(noseTip[0][0][1]))
             cv2.line(frame, p1, p2, (255,0,0), 2)
 
-            print(getExpression(expModel, landmarksCoords, EXPRESSIONS))
+            currentExpression, expressionConfidence = getExpression(expModel, landmarksCoords, EXPRESSIONS)
+            cv2.putText(
+                frame,
+                f"Expression: {currentExpression} - Confidence: {np.round(expressionConfidence*100, 2)}%",
+                (size[1]-775,size[0]-15),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0,0,255)
+            )
 
         cv2.imshow(
             'Head pose estimation by Juan Carlos Soriano and Jorge Gimenez', frame)

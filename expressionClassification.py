@@ -22,4 +22,4 @@ def getExpression(classificationModel, landmarks, expressionList):
     # Se tendrían que normalizar
     
     res = classificationModel(featuresArr)
-    return expressionList[np.argmax(res)]
+    return expressionList[np.argmax(res)], np.max(res)
