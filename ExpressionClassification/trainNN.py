@@ -1,7 +1,9 @@
 import numpy as np
 from sklearn import preprocessing
+from sklearn import metrics
 import tensorflow as tf
 import tensorflow.keras as keras
+import matplotlib.pyplot as plt
 
 train_x = np.load("./ExpressionClassification/train_features.npy")
 train_y = np.load("./ExpressionClassification/train_labels.npy")
@@ -55,11 +57,34 @@ model.compile(
 ################################################################################
 
 ######################## Model Training and Saving #############################
-model.fit(
+history = model.fit(
     train_x,
     train_y,
     epochs=20,
     validation_data=(test_x, test_y)
     )
 model.save("trainedClassificationNN")
+################################################################################
+
+############################## Results Inspection ##############################
+predictions = model.predict(train_x)
+pred_y = (predictions > 0.5)
+
+matrix = metrics.confusion_matrix(train_y.argmax(axis=1), pred_y.argmax(axis=1), normalize="true")
+matrix = np.round(matrix*100,2)
+print(matrix)
+
+plt.plot(history.history["val_accuracy"])
+plt.title("Model Accuracy")
+plt.ylabel("Accuracy")
+plt.xlabel("epoch")
+plt.legend(["train"], loc="upper left")
+plt.show()
+
+plt.plot(history.history["val_loss"], color="orange")
+plt.title("Model Loss")
+plt.ylabel("Loss")
+plt.xlabel("epoch")
+plt.legend(["train"], loc="upper left")
+plt.show()
 ################################################################################
