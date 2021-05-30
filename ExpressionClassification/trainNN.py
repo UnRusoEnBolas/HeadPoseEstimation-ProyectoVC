@@ -58,7 +58,7 @@ model.compile(
 model.fit(
     train_x,
     train_y,
-    epochs=35,
+    epochs=20,
     validation_data=(test_x, test_y)
     )
 model.save("trainedClassificationNN")
